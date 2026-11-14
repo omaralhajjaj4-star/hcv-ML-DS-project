@@ -1,3 +1,5 @@
 *.pdf
 *.csv
 *.xslx
+/Users/omaralhajjaj/Projects/HCV proj/01_missingness_analysis.ipynb
+/Users/omaralhajjaj/Projects/HCV proj/02_imputation_comparison.ipynb
