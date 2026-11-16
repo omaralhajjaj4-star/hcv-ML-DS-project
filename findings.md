@@ -1,96 +1,124 @@
-# Class imbalance strategies: findings
+# Findings
 
-## Question
+This file summarises what the notebooks in this repository found. Each
+section names the notebook the numbers come from.
 
-The cleaned HCV data contain 608 patients: Healthy 533, Hepatitis 24,
-Fibrosis 21 and Cirrhosis 30. Which strategy for handling the minority
-classes gives the best balanced performance, and which should be carried
-into the machine-learning stage? This is a strategy comparison using two
-reference classifiers, not the final model study.
+## The data
 
-## Design
+The HCV dataset (`hcvdat0.csv`) has 615 patients and 12 predictors: age,
+sex and ten laboratory values. Seven suspected blood donors were removed
+because their true status is uncertain. This leaves 608 patients: 533
+healthy, 24 with hepatitis, 21 with fibrosis and 30 with cirrhosis. Only
+75 patients (12%) are sick, so the classes are very imbalanced.
 
-The analysis starts from the unimputed data (31 missing predictor values)
-with the label cleaning of `cleaning.ipynb`. Predictors are the 11 numeric
-variables plus Sex. Within each training fold, an `imblearn` pipeline
-applies median imputation and scaling (numeric) and one-hot encoding (Sex),
-then the sampler, then the classifier. Resampling and imputation therefore
-never see test-fold patients. Evaluation uses 5-fold stratified
-cross-validation repeated five times (25 test folds, seed 42), with
-identical splits for every strategy. The smallest Fibrosis training count
-in any fold was 16, enough for five-neighbour SMOTE. Classifiers were
-logistic regression and a 300-tree random forest. Nine strategies were
-compared: no handling (baseline), `class_weight="balanced"`, random
-over-sampling, SMOTE, BorderlineSMOTE, ADASYN, SMOTETomek, SMOTEENN and
-random under-sampling. No ADASYN fold failed (errors were set to raise).
+## Cleaning (`cleaning.ipynb`)
 
-## Key results (mean over 25 folds)
+- Five columns have missing values (31 values in total). ALP is missing
+  mostly in sick patients, so rows with missing values were not deleted.
+- Three ways of filling the gaps were compared. None was clearly better,
+  so the median was used because it is the simplest.
+- Outliers were reported but kept. All 30 cirrhosis patients have at least
+  one outlier, so removing outliers would remove the disease itself.
 
-| Model | Strategy | Macro F1 | Balanced acc. | Healthy | Hepatitis | Fibrosis | Cirrhosis |
-|---|---|---|---|---|---|---|---|
-| LR | Baseline | 0.653 | 0.625 | 0.995 | 0.400 | 0.366 | 0.740 |
-| LR | class_weight=balanced | 0.602 | 0.667 | 0.927 | 0.578 | 0.478 | 0.687 |
-| LR | RandomUnderSampler | 0.608 | 0.701 | 0.894 | 0.604 | 0.606 | 0.700 |
-| RF | Baseline | 0.590 | 0.566 | 0.996 | 0.258 | 0.258 | 0.753 |
-| RF | SMOTE | 0.677 | 0.680 | 0.990 | 0.558 | 0.344 | 0.827 |
-| RF | SMOTETomek | 0.679 | 0.683 | 0.990 | 0.566 | 0.344 | 0.833 |
-| RF | SMOTEENN | 0.682 | 0.689 | 0.985 | 0.574 | 0.366 | 0.833 |
+## Exploration and statistics (`eda.ipynb`, `stats.ipynb`)
 
-Columns Healthy to Cirrhosis are per-class recall. Standard deviations
-across folds are about 0.05 to 0.10 for macro F1 and balanced accuracy.
+- None of the 11 numeric variables is normally distributed. CREA, BIL,
+  GGT, AST, ALP and ALT are strongly right-skewed.
+- 10 of the 11 variables differ between the four categories (Kruskal-Wallis
+  and ANOVA agree). CREA is the only one that does not.
+- AST, GGT and BIL separate the categories most strongly.
 
-## Ranking
+## Class imbalance (`class_imbalance.ipynb`)
 
-- Logistic regression, macro F1: baseline 0.653, then BorderlineSMOTE
-  0.617, SMOTE, SMOTETomek and RandomUnderSampler (each 0.608). Every
-  strategy lowered macro F1.
-- Logistic regression, balanced accuracy: RandomUnderSampler 0.701,
-  class_weight 0.667, SMOTE 0.660; baseline last (0.625).
-- Random forest, macro F1: SMOTEENN 0.682, SMOTETomek 0.679, SMOTE 0.677;
-  baseline 0.590 (ninth), RandomUnderSampler 0.595 (eighth).
-- Random forest, balanced accuracy: SMOTEENN 0.689, SMOTETomek 0.683,
-  SMOTE 0.680; baseline last (0.566).
+Nine strategies were compared on four classes with logistic regression and
+random forest, using 5-fold cross-validation repeated five times. All
+resampling was done inside the training folds.
 
-Paired against the baseline, the random forest gained 0.086 (SMOTE) to
-0.091 (SMOTEENN) macro F1 with Bonferroni-adjusted p of 0.0003 or below.
-For logistic regression, the macro-F1 loss was clearest for random
-over-sampling (-0.065, adjusted p = 0.0057), while the balanced-accuracy
-gain was clear only for under-sampling (+0.076, adjusted p = 0.0032). These
-p-values are indicative only, because cross-validation folds share
-training data and are not independent.
+| Model | Strategy | Macro F1 | Balanced accuracy |
+|---|---|---|---|
+| Logistic regression | None | 0.653 | 0.625 |
+| Logistic regression | Class weights | 0.602 | 0.667 |
+| Logistic regression | Random under-sampling | 0.608 | 0.701 |
+| Random forest | None | 0.590 | 0.566 |
+| Random forest | SMOTE | 0.677 | 0.680 |
+| Random forest | SMOTEENN | 0.682 | 0.689 |
 
-## Recommendation
+- Random forest improved with SMOTE-type methods. Logistic regression did
+  not improve on macro F1 with any strategy.
+- Fibrosis recall stayed below 0.61 for every strategy. Resampling does not
+  solve the hardest class.
+- Models built for imbalance (Balanced Random Forest, EasyEnsemble,
+  RUSBoost and others) did not beat random forest with SMOTE.
 
-For the random forest, use a SMOTE-family method. SMOTEENN, SMOTETomek and
-SMOTE differ by at most 0.005 macro F1, far less than the fold SD, so plain
-SMOTE is a sensible default, with SMOTEENN or SMOTETomek as secondary
-options to be tuned in the ML stage. All three raised Hepatitis recall from
-0.258 to 0.558-0.574 and Cirrhosis recall to 0.827-0.833 while keeping
-Healthy recall at 0.985 or above. Random under-sampling and
-class weights were clearly weaker for this model.
+## SMOTE leakage (`experiment_datasets.ipynb`)
 
-For logistic regression, `class_weight="balanced"` is the simplest
-choice: it raises balanced accuracy to 0.667 and Hepatitis and Fibrosis
-recall (0.578, 0.478) without creating synthetic patients. If sensitivity
-to rare disease outweighs everything else, under-sampling gives the best
-minority recall but discards most Healthy data.
+This experiment shows what happens when SMOTE is applied to the whole
+dataset before splitting it. Synthetic copies of the test patients then end
+up in the training data, and the scores rise to as much as 99%.
 
-## Trade-offs
+| Task | Model | Macro F1, honest | Macro F1, leaky |
+|---|---|---|---|
+| Healthy vs sick | Logistic regression | 0.918 | 0.969 |
+| Healthy vs sick | Random forest | 0.944 | 0.986 |
+| Healthy vs sick | Decision tree | 0.881 | 0.963 |
+| Four classes | Logistic regression | 0.620 | 0.876 |
+| Four classes | Random forest | 0.659 | 0.994 |
+| Four classes | Decision tree | 0.561 | 0.958 |
 
-Every strategy lowered Healthy recall for logistic regression (0.894 to
-0.952 versus 0.995), meaning more healthy patients flagged for follow-up;
-macro precision also fell (baseline 0.750, class_weight 0.584). Synthetic
-samples are interpolations of at most 30 real patients and may not
-represent real clinical variation. Instability is substantial: minority
-recall SDs reach 0.14 to 0.29, so a single split could rank strategies
-differently. SMOTETomek matched SMOTE exactly for logistic regression,
-suggesting Tomek-link cleaning removed little.
+- Healthy vs sick is an easy task, so the leak adds little (0.04 to 0.08).
+- With four classes the leak adds 0.26 to 0.40. The honest scores are
+  between 0.56 and 0.66.
+- A two-step model (healthy or not, then type of damage) was not clearly
+  better than a single four-class model (macro F1 0.678 against 0.659).
 
-## Limitations
+## Machine learning models (`ml_models.ipynb`)
 
-Only two classifiers with fixed hyperparameters were used; the best
-strategy may change with tuning. Fibrosis recall stayed below 0.61 for
-every strategy, so the hardest class is not solved by resampling alone.
-Metrics were averaged over folds rather than pooled, and no external
-validation set exists. The confusion matrices in the notebook (first
-repeat, one prediction per patient) are for visual inspection only.
+Three models were trained to predict healthy or sick, with the same
+settings and evaluation as the COM725 study: an 80/20 stratified split,
+class weights, and no synthetic patients. The AST/ALT ratio was added as an
+engineered feature. The test set has 107 healthy and 15 sick patients.
+
+| Model | Accuracy | Sick patients found | Healthy patients wrongly flagged |
+|---|---|---|---|
+| Logistic regression | 0.98 | 13 of 15 | 1 of 107 |
+| Random forest | 0.98 | 13 of 15 | 1 of 107 |
+| Decision tree | 0.98 | 15 of 15 | 2 of 107 |
+
+All three models do well without any synthetic data.
+
+## Feature engineering
+
+- **COM725 data:** FIB-4 was added, using the formula of Sterling et al.
+  (2006): (age x AST) / (platelets x square root of ALT). The models there
+  still perform at chance level (24% to 27% accuracy on four stages).
+- **HCV data:** FIB-4 needs a platelet count, which this dataset does not
+  have. The AST/ALT ratio (Sheth et al., 1998) was used instead.
+
+## Limits
+
+- The test set in `ml_models.ipynb` has only 15 sick patients and comes
+  from a single split. One extra mistake changes sick recall by about 7
+  points. The cross-validated macro F1 for the same task is 0.86 to 0.90.
+- `ml_models.ipynb` uses the file imputed with the median of all patients,
+  so 31 values were filled before the split.
+- There are only 21 to 30 patients in each disease class and no external
+  dataset to validate on.
+- Model settings were fixed and not tuned.
+
+## References
+
+- Chicco, D. and Jurman, G. (2021) 'An ensemble learning approach for
+  enhanced classification of patients with hepatitis and cirrhosis',
+  *IEEE Access*, 9, pp. 24485-24498.
+- Sheth, S.G., Flamm, S.L., Gordon, F.D. and Chopra, S. (1998) 'AST/ALT
+  ratio predicts cirrhosis in patients with chronic hepatitis C virus
+  infection', *American Journal of Gastroenterology*, 93(1), pp. 44-48.
+- Sterling, R.K. et al. (2006) 'Development of a simple noninvasive index
+  to predict significant fibrosis in patients with HIV/HCV coinfection',
+  *Hepatology*, 43(6), pp. 1317-1325.
+- Vallet-Pichard, A. et al. (2007) 'FIB-4: an inexpensive and accurate
+  marker of fibrosis in HCV infection. Comparison with liver biopsy and
+  FibroTest', *Hepatology*, 46(1), pp. 32-36.
+- Wei, R. et al. (2018) 'Clinical prediction of HBV and HCV related
+  hepatic fibrosis using machine learning', *EBioMedicine*, 35,
+  pp. 124-132.
