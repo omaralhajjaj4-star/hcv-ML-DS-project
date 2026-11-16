@@ -48,7 +48,7 @@ resampling was done inside the training folds.
 - Fibrosis recall stayed below 0.61 for every strategy. Resampling does not
   solve the hardest class.
 - Models built for imbalance (Balanced Random Forest, EasyEnsemble,
-  RUSBoost and others) did not beat random forest with SMOTE.
+  RUSBoost and others) did not beat random forest with SMOTE on macro F1.
 
 ## SMOTE leakage (`experiment_datasets.ipynb`)
 
@@ -89,8 +89,10 @@ All three models do well without any synthetic data.
 ## Feature engineering
 
 - **COM725 data:** FIB-4 was added, using the formula of Sterling et al.
-  (2006): (age x AST) / (platelets x square root of ALT). The models there
-  still perform at chance level (24% to 27% accuracy on four stages).
+  (2006): (age x AST) / (platelets x square root of ALT). It is used by
+  the logistic regression and random forest there, not by the two models
+  trained on binned values. All four still perform at chance level (24%
+  to 27% accuracy on four stages).
 - **HCV data:** FIB-4 needs a platelet count, which this dataset does not
   have. The AST/ALT ratio (Sheth et al., 1998) was used instead.
 
