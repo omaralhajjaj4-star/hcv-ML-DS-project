@@ -50,41 +50,74 @@ resampling was done inside the training folds.
 - Models built for imbalance (Balanced Random Forest, EasyEnsemble,
   RUSBoost and others) did not beat random forest with SMOTE on macro F1.
 
-## SMOTE leakage (`experiment_datasets.ipynb`)
+## Data leakage (`data_leakage.ipynb`)
 
-This experiment shows what happens when SMOTE is applied to the whole
-dataset before splitting it. Synthetic copies of the test patients then end
-up in the training data, and the scores rise to as much as 99%.
+This notebook repeats the pipeline of Das et al. (2025), who applied mean
+imputation, winsorising, SMOTE and scaling to all 615 rows and only then
+split the data 70/15/15. Their test set has 400 rows, 81 of them suspect
+blood donors, although the raw data hold only 7. The notebook repeats the
+pipeline with four models at default settings, then splits first and fits
+every step on the training rows only. The paper does not state its seed,
+scaler or winsorising limits, so 5% and 95% limits and `random_state=42`
+were assumed and the replication only approximates the paper.
 
-| Task | Model | Macro F1, honest | Macro F1, leaky |
-|---|---|---|---|
-| Healthy vs sick | Logistic regression | 0.918 | 0.969 |
-| Healthy vs sick | Random forest | 0.944 | 0.986 |
-| Healthy vs sick | Decision tree | 0.881 | 0.963 |
-| Four classes | Logistic regression | 0.620 | 0.876 |
-| Four classes | Random forest | 0.659 | 0.994 |
-| Four classes | Decision tree | 0.561 | 0.958 |
+- Replicated: the test set has 400 rows with 80 in each class, including
+  80 suspect blood donor rows, although only 7 exist.
+- Corrected: the test set has 93 real patients: 81 blood donors, 1 suspect
+  donor, 3 hepatitis, 3 fibrosis and 5 cirrhosis.
 
-- Healthy vs sick is an easy task, so the leak adds little (0.04 to 0.08).
-- With four classes the leak adds 0.26 to 0.40. The honest scores are
-  between 0.56 and 0.66.
-- A two-step model (healthy or not, then type of damage) was not clearly
-  better than a single four-class model (macro F1 0.678 against 0.659).
+| Model | Paper accuracy | Replicated accuracy | Corrected accuracy | Replicated macro F1 | Corrected macro F1 |
+|---|---|---|---|---|---|
+| Logistic regression | 92.50 | 91.25 | 93.55 | 0.911 | 0.603 |
+| Decision tree | 94.75 | 96.75 | 93.55 | 0.968 | 0.684 |
+| Random forest | 98.25 | 99.75 | 95.70 | 0.997 | 0.759 |
+| SVM | 98.50 | 99.75 | 95.70 | 0.997 | 0.659 |
+
+- The replication gets close to the paper's accuracy (within 2.5 points).
+- Corrected accuracy stays at 93.55 to 95.70 because 81 of the 93 test
+  patients are blood donors. Macro F1 falls from 0.911 to 0.997 down to 0.603
+  to 0.759, which shows the effect of the order of steps.
 
 ## Machine learning models (`ml_models.ipynb`)
 
-Three models were trained to predict healthy or sick, with the same
-settings and evaluation as the COM725 study: an 80/20 stratified split,
-class weights, and no synthetic patients. The AST/ALT ratio was added as an
-engineered feature. The test set has 107 healthy and 15 sick patients.
+Three models (logistic regression, random forest and decision tree) were
+trained in three ways, with the same settings and evaluation as the COM725
+study: an 80/20 stratified split and a median imputer fitted inside each
+pipeline, so the training rows alone set the median.
 
-| Model | Accuracy | Sick patients found | Healthy patients wrongly flagged |
+**Healthy or sick** (no SMOTE). The test set has 107 healthy and 15 sick
+patients.
+
+| Model | Accuracy | Macro F1 | Sick patients found |
 |---|---|---|---|
-| Logistic regression | 0.98 | 13 of 15 | 1 of 107 |
-| Random forest | 0.98 | 13 of 15 | 1 of 107 |
-| Decision tree | 0.98 | 15 of 15 | 2 of 107 |
+| Logistic regression | 0.98 | 0.94 | 13 of 15 |
+| Random forest | 0.98 | 0.94 | 13 of 15 |
+| Decision tree | 0.98 | 0.96 | 15 of 15 |
 
-All three models do well without any synthetic data.
+**Four classes** (SMOTE inside the pipeline). The test set has 107 healthy,
+6 cirrhosis, 5 hepatitis and 4 fibrosis patients.
+
+| Model | Accuracy | Macro F1 | Cirrhosis | Hepatitis | Fibrosis |
+|---|---|---|---|---|---|
+| Logistic regression | 0.92 | 0.61 | 4 of 6 | 3 of 5 | 1 of 4 |
+| Random forest | 0.93 | 0.58 | 6 of 6 | 1 of 5 | 1 of 4 |
+| Decision tree | 0.92 | 0.47 | 5 of 6 | 1 of 5 | 0 of 4 |
+
+**Three stages** (sick patients only). The test set has 6 cirrhosis,
+5 hepatitis and 4 fibrosis patients.
+
+| Model | Accuracy | Macro F1 | Cirrhosis | Hepatitis | Fibrosis |
+|---|---|---|---|---|---|
+| Logistic regression | 0.67 | 0.65 | 5 of 6 | 3 of 5 | 2 of 4 |
+| Random forest | 0.60 | 0.55 | 5 of 6 | 3 of 5 | 1 of 4 |
+| Decision tree | 0.60 | 0.53 | 6 of 6 | 1 of 5 | 2 of 4 |
+
+- Healthy or sick is easy: all three models reach 0.98 accuracy without
+  synthetic patients.
+- Naming the disease is much harder. Four-class accuracy stays at 0.92 to
+  0.93 only because most patients are healthy, and macro F1 falls to 0.47
+  to 0.61.
+- Cirrhosis is found most often. Fibrosis and hepatitis are often mixed up.
 
 ## Feature engineering
 
@@ -100,9 +133,10 @@ All three models do well without any synthetic data.
 
 - The test set in `ml_models.ipynb` has only 15 sick patients and comes
   from a single split. One extra mistake changes sick recall by about 7
-  points. The cross-validated macro F1 for the same task is 0.86 to 0.90.
-- `ml_models.ipynb` uses the file imputed with the median of all patients,
-  so 31 values were filled before the split.
+  points.
+- The disease-class test sets are small: 4 to 6 patients per class in
+  `ml_models.ipynb` and 1 to 5 in `data_leakage.ipynb`, so one patient
+  changes a recall by about 17 points or more.
 - There are only 21 to 30 patients in each disease class and no external
   dataset to validate on.
 - Model settings were fixed and not tuned.
@@ -112,6 +146,8 @@ All three models do well without any synthetic data.
 - Chicco, D. and Jurman, G. (2021) 'An ensemble learning approach for
   enhanced classification of patients with hepatitis and cirrhosis',
   *IEEE Access*, 9, pp. 24485-24498.
+- Das, N. et al. (2025) 'Enlightened prognosis: Hepatitis prediction with
+  an explainable machine learning approach', *PLoS ONE*, 20(3), e0319078.
 - Sheth, S.G., Flamm, S.L., Gordon, F.D. and Chopra, S. (1998) 'AST/ALT
   ratio predicts cirrhosis in patients with chronic hepatitis C virus
   infection', *American Journal of Gastroenterology*, 93(1), pp. 44-48.
