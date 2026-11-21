@@ -1,0 +1,13 @@
+Outcome,Class,Patients,Training fold (min-max),Test fold (min-max)
+Healthy vs sick,Healthy,533,426-427,106-107
+Healthy vs sick,Sick,75,60-60,15-15
+Healthy vs sick,Total,608,,
+Four classes,Healthy,533,426-427,106-107
+Four classes,Hepatitis,24,19-20,4-5
+Four classes,Fibrosis,21,16-17,4-5
+Four classes,Cirrhosis,30,24-24,6-6
+Four classes,Total,608,,
+Three disease stages,Hepatitis,24,19-20,4-5
+Three disease stages,Fibrosis,21,16-17,4-5
+Three disease stages,Cirrhosis,30,24-24,6-6
+Three disease stages,Total,75,,

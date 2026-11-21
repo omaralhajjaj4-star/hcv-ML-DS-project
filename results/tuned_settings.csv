@@ -1,0 +1,88 @@
+Outcome,Model,Imbalance handling,Setting,Outer folds (of 50)
+Healthy vs sick,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 1}",34
+Healthy vs sick,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 5}",10
+Healthy vs sick,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 3}",3
+Healthy vs sick,Decision tree,Class weights,"{'max_depth': 3, 'min_samples_leaf': 5}",3
+Healthy vs sick,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 5}",21
+Healthy vs sick,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 1}",13
+Healthy vs sick,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 3}",11
+Healthy vs sick,Decision tree,No correction,"{'max_depth': 3, 'min_samples_leaf': 3}",3
+Healthy vs sick,Decision tree,No correction,"{'max_depth': 3, 'min_samples_leaf': 5}",1
+Healthy vs sick,Decision tree,No correction,"{'max_depth': 4, 'min_samples_leaf': 5}",1
+Healthy vs sick,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 1}",34
+Healthy vs sick,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 5}",7
+Healthy vs sick,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 3}",4
+Healthy vs sick,Decision tree,SMOTE-NC,"{'max_depth': 3, 'min_samples_leaf': 3}",2
+Healthy vs sick,Decision tree,SMOTE-NC,"{'max_depth': 3, 'min_samples_leaf': 1}",1
+Healthy vs sick,Decision tree,SMOTE-NC,"{'max_depth': 3, 'min_samples_leaf': 5}",1
+Healthy vs sick,Decision tree,SMOTE-NC,"{'max_depth': 4, 'min_samples_leaf': 5}",1
+Healthy vs sick,Logistic regression,Class weights,{'C': 1},49
+Healthy vs sick,Logistic regression,Class weights,{'C': 0.1},1
+Healthy vs sick,Logistic regression,No correction,{'C': 1},49
+Healthy vs sick,Logistic regression,No correction,{'C': 10},1
+Healthy vs sick,Logistic regression,SMOTE-NC,{'C': 1},46
+Healthy vs sick,Logistic regression,SMOTE-NC,{'C': 0.1},4
+Healthy vs sick,Random forest,Class weights,"{'max_depth': None, 'min_samples_leaf': 1}",29
+Healthy vs sick,Random forest,Class weights,"{'max_depth': 5, 'min_samples_leaf': 1}",13
+Healthy vs sick,Random forest,Class weights,"{'max_depth': None, 'min_samples_leaf': 3}",8
+Healthy vs sick,Random forest,No correction,"{'max_depth': 5, 'min_samples_leaf': 1}",33
+Healthy vs sick,Random forest,No correction,"{'max_depth': None, 'min_samples_leaf': 1}",17
+Healthy vs sick,Random forest,SMOTE-NC,"{'max_depth': None, 'min_samples_leaf': 1}",47
+Healthy vs sick,Random forest,SMOTE-NC,"{'max_depth': None, 'min_samples_leaf': 3}",2
+Healthy vs sick,Random forest,SMOTE-NC,"{'max_depth': 5, 'min_samples_leaf': 1}",1
+Four classes,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 1}",33
+Four classes,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 5}",6
+Four classes,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 3}",5
+Four classes,Decision tree,Class weights,"{'max_depth': 3, 'min_samples_leaf': 5}",4
+Four classes,Decision tree,Class weights,"{'max_depth': 3, 'min_samples_leaf': 1}",2
+Four classes,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 1}",49
+Four classes,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 5}",1
+Four classes,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 1}",39
+Four classes,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 3}",4
+Four classes,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 5}",2
+Four classes,Decision tree,SMOTE-NC,"{'max_depth': 3, 'min_samples_leaf': 5}",2
+Four classes,Decision tree,SMOTE-NC,"{'max_depth': 3, 'min_samples_leaf': 1}",1
+Four classes,Decision tree,SMOTE-NC,"{'max_depth': 3, 'min_samples_leaf': 3}",1
+Four classes,Decision tree,SMOTE-NC,"{'max_depth': 4, 'min_samples_leaf': 3}",1
+Four classes,Logistic regression,Class weights,{'C': 0.1},48
+Four classes,Logistic regression,Class weights,{'C': 1},2
+Four classes,Logistic regression,No correction,{'C': 0.1},42
+Four classes,Logistic regression,No correction,{'C': 1},8
+Four classes,Logistic regression,SMOTE-NC,{'C': 0.1},50
+Four classes,Random forest,Class weights,"{'max_depth': None, 'min_samples_leaf': 1}",49
+Four classes,Random forest,Class weights,"{'max_depth': None, 'min_samples_leaf': 3}",1
+Four classes,Random forest,No correction,"{'max_depth': 5, 'min_samples_leaf': 1}",35
+Four classes,Random forest,No correction,"{'max_depth': None, 'min_samples_leaf': 1}",15
+Four classes,Random forest,SMOTE-NC,"{'max_depth': None, 'min_samples_leaf': 1}",41
+Four classes,Random forest,SMOTE-NC,"{'max_depth': None, 'min_samples_leaf': 3}",8
+Four classes,Random forest,SMOTE-NC,"{'max_depth': None, 'min_samples_leaf': 5}",1
+Three disease stages,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 1}",26
+Three disease stages,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 5}",15
+Three disease stages,Decision tree,Class weights,"{'max_depth': 2, 'min_samples_leaf': 3}",9
+Three disease stages,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 1}",24
+Three disease stages,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 5}",20
+Three disease stages,Decision tree,No correction,"{'max_depth': 2, 'min_samples_leaf': 3}",6
+Three disease stages,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 1}",27
+Three disease stages,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 5}",17
+Three disease stages,Decision tree,SMOTE-NC,"{'max_depth': 2, 'min_samples_leaf': 3}",6
+Three disease stages,Logistic regression,Class weights,{'C': 0.1},42
+Three disease stages,Logistic regression,Class weights,{'C': 0.01},8
+Three disease stages,Logistic regression,No correction,{'C': 0.1},46
+Three disease stages,Logistic regression,No correction,{'C': 0.01},4
+Three disease stages,Logistic regression,SMOTE-NC,{'C': 0.1},33
+Three disease stages,Logistic regression,SMOTE-NC,{'C': 0.01},17
+Three disease stages,Random forest,Class weights,"{'max_depth': 5, 'min_samples_leaf': 1}",27
+Three disease stages,Random forest,Class weights,"{'max_depth': None, 'min_samples_leaf': 1}",15
+Three disease stages,Random forest,Class weights,"{'max_depth': None, 'min_samples_leaf': 3}",4
+Three disease stages,Random forest,Class weights,"{'max_depth': 5, 'min_samples_leaf': 3}",3
+Three disease stages,Random forest,Class weights,"{'max_depth': None, 'min_samples_leaf': 5}",1
+Three disease stages,Random forest,No correction,"{'max_depth': None, 'min_samples_leaf': 1}",18
+Three disease stages,Random forest,No correction,"{'max_depth': 5, 'min_samples_leaf': 1}",15
+Three disease stages,Random forest,No correction,"{'max_depth': None, 'min_samples_leaf': 3}",9
+Three disease stages,Random forest,No correction,"{'max_depth': 5, 'min_samples_leaf': 3}",6
+Three disease stages,Random forest,No correction,"{'max_depth': None, 'min_samples_leaf': 5}",2
+Three disease stages,Random forest,SMOTE-NC,"{'max_depth': None, 'min_samples_leaf': 1}",23
+Three disease stages,Random forest,SMOTE-NC,"{'max_depth': 5, 'min_samples_leaf': 1}",13
+Three disease stages,Random forest,SMOTE-NC,"{'max_depth': 5, 'min_samples_leaf': 3}",6
+Three disease stages,Random forest,SMOTE-NC,"{'max_depth': None, 'min_samples_leaf': 3}",6
+Three disease stages,Random forest,SMOTE-NC,"{'max_depth': 5, 'min_samples_leaf': 5}",2
