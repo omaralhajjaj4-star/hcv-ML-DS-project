@@ -3,3 +3,6 @@
 *.xslx
 /Users/omaralhajjaj/Projects/HCV proj/01_missingness_analysis.ipynb
 /Users/omaralhajjaj/Projects/HCV proj/02_imputation_comparison.ipynb
+.venv/
+__pycache__/
+.ipynb_checkpoints/

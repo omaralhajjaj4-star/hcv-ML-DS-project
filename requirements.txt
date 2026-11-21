@@ -1,0 +1,13 @@
+# Python 3.10 (tested on 3.10.20). Install with: pip install -r requirements.txt
+numpy==2.2.6
+pandas==2.3.3
+scipy==1.15.3
+scikit-learn==1.7.2
+imbalanced-learn==0.14.2
+statsmodels==0.15.0
+matplotlib==3.10.9
+seaborn==0.13.2
+ipython==8.39.0
+jupyter==1.1.1
+nbconvert==7.17.2
+openpyxl==3.1.5
