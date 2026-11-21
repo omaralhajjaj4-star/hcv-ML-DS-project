@@ -1,0 +1,11 @@
+Pair,Patients in pair,Required in pair,Required in total
+Healthy vs Hepatitis,557,2543.0,2776
+Healthy vs Fibrosis,554,2765.0,3034
+Healthy vs Cirrhosis,563,2226.0,2404
+Hepatitis vs Fibrosis,45,976.0,13175
+Hepatitis vs Cirrhosis,54,978.0,11011
+Fibrosis vs Cirrhosis,51,985.0,11740
+Risk of Healthy (criterion 3),608,,167
+Risk of Hepatitis (criterion 3),608,,59
+Risk of Fibrosis (criterion 3),608,,52
+Risk of Cirrhosis (criterion 3),608,,73

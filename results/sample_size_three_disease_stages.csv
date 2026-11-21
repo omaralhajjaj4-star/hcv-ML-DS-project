@@ -1,0 +1,7 @@
+Pair,Patients in pair,Required in pair,Required in total
+Hepatitis vs Fibrosis,45,976.0,1626
+Hepatitis vs Cirrhosis,54,978.0,1359
+Fibrosis vs Cirrhosis,51,985.0,1449
+Risk of Hepatitis (criterion 3),75,,335
+Risk of Fibrosis (criterion 3),75,,310
+Risk of Cirrhosis (criterion 3),75,,369
