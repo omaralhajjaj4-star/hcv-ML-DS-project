@@ -267,9 +267,9 @@ This notebook re-implements Das et al. (2025) on all 615 rows with 5 classes, fi
 | **Exactly one suspect donor in every corrected test set** (50 of 50 seeds). Auditor check: its F1 is 0 in 46% (LR) to 76% (DT) of seeds. At seed 42 it changes the ranking: RF is best on 5 classes (0.759) because it got that one patient right, but SVM is best on 4 real classes (0.823 vs 0.698) | Cell 26 output; Limits > cell 29 (markdown) | One patient makes up a fifth of 5-class macro F1. | Any metric for a class with one test patient is uninformative. Fits the paper's theme on small validation samples. |
 | **Findings and limits** | Comparison > cell 23 (markdown); Repeating both versions > cell 28 (markdown); Limits > cell 29 (markdown) | Cell 28 says seed 42 sits "near the top of the 50-seed range"; true for DT and RF, not for LR (60th percentile). Cell 29 now says exactly one suspect donor per seed and points to 4-real-class macro F1. | Use "above the median for all four models" in the paper. |
 
-## 8. COM725/COM725_AE2_Omar_Al_Hajaj.ipynb: the Egyptian dataset carries no signal
+## 8. COM725/egy_hcv.ipynb: the Egyptian dataset carries no signal
 
-This coursework notebook (89 cells) models baseline fibrosis stage in the UCI "HCV for Egyptian patients" data (1,385 rows). The UCI page says nothing about how the data were generated ([UCI dataset 503](https://archive.ics.uci.edu/dataset/503/hepatitis+c+virus+hcv+for+egyptian+patients)).
+This notebook (89 coursework cells, then 5 cells of data description for the paper) models baseline fibrosis stage in the UCI "HCV for Egyptian patients" data (1,385 rows). The UCI page says nothing about how the data were generated ([UCI dataset 503](https://archive.ics.uci.edu/dataset/503/hepatitis+c+virus+hcv+for+egyptian+patients)).
 
 | Result | Where | Interpretation | What it means for the study |
 |---|---|---|---|
@@ -337,3 +337,14 @@ These cannot be fixed with code in this repo:
 The repo now tells one consistent story, and it is stronger than the near-perfect numbers in the literature because it is honest about them. Routine labs answer "is this person a liver patient?" well, but the data cannot support "which stage?", and the sample size results predicted that before any model was trained. The cleanest single argument in the repo is practical, not statistical: an uncorrected logistic regression with a 0.1 cut-off finds 94% of sick patients while flagging 18 per 100, whereas class weights flag 32 per 100 for similar sensitivity. That turns the abstract calibration argument into referral numbers a clinician can weigh.
 
 The main risks for the paper now sit outside the code. The 0.98 AUROC comes from comparing blood donors with diagnosed patients at 12% prevalence, so it is an upper bound until someone tests the model on people actually being worked up for liver damage. The leakage and Egyptian results are most useful as context: one shows how evaluation design can manufacture accuracy, and the other shows that a dataset can contain no signal at all. The stale `findings.md` sections and the missing TRIPOD+AI items have now been fixed, so what is left is external validation, which needs new data.md` sections and adding the missing TRIPOD+AI items, most of which need no retraining, would close the remaining gaps.
+
+## Files added for the Results section of the paper
+
+These cells only save tables that were already printed, or draw figures from saved predictions; no result changed.
+
+| File | Where |
+|---|---|
+| `results/missingness_tests.csv`, `results/missing_by_category.csv` | cleaning > cells 20 and 26 |
+| `results/kruskal_wallis.csv`, `results/dunn_posthoc.csv`, `results/sex_differences_*.csv`, `results/sample_size_*.csv` | stats > cells 12, 15, 24, 29 and 31 |
+| `results/egyptian_stage_counts.csv`, `results/egyptian_distributions.csv`, `results/egyptian_stages_and_histograms.png` | COM725/egy_hcv > Data description for the paper > cells 91-93 (four stages hold 336 to 362 patients; excess kurtosis -1.27 to -1.16, the shape of a flat distribution) |
+| `results/roc_healthy_vs_sick.png`, `results/confusion_matrix_*.csv`, `results/confusion_matrices_primary.png`, `results/stability_by_seed.png`, `results/stability_range_no_correction.csv` | ml_models > Figures for the paper (read only the saved out-of-fold predictions) |
