@@ -20,6 +20,6 @@ Run the notebooks from the project folder in this order. `cleaning.ipynb` writes
 5. `ml_models.ipynb` - model development and internal validation
 6. `data_leakage.ipynb` - re-analysis of Das et al. (2025)
 
-`COM725/COM725_AE2_Omar_Al_Hajaj.ipynb` holds the earlier analysis of the Egyptian HCV dataset.
+`COM725/egy_hcv.ipynb` holds all the work on the Egyptian HCV dataset: the earlier coursework analysis and, at the end, the stage counts, distributions and figure used in the paper. Run it from the `COM725` folder; it saves its tables and figure to `results/`.
 
 Data: UCI Machine Learning Repository, HCV data (Lichtinghagen, Klawonn and Hoffmann, 2020), doi:10.24432/C5D612.
